@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Editar Cuenta</h2>
+    <form method="post" action="{{ url_for('update_account', id=account.id) }}">
+        <div class="mb-3">
+            <label for="institution" class="form-label">Institución</label>
+            <input type="text" class="form-control" id="institution" name="institution" value="{{ account.institution }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="account_type" class="form-label">Tipo de Cuenta</label>
+            <input type="text" class="form-control" id="account_type" name="account_type" value="{{ account.account_type }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="alias" class="form-label">Alias</label>
+            <input type="text" class="form-control" id="alias" name="alias" value="{{ account.alias }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Actualizar Cuenta</button>
+    </form>
+</div>
+{% endblock %}
