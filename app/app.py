@@ -1,12 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import logging
-import datetime
 import os
-from config.config import Config, ProductionConfig, DevelopmentConfig, TestingConfig
-
+from config.config import ProductionConfig, DevelopmentConfig, TestingConfig
+from db import db
 
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
@@ -21,8 +20,12 @@ elif app.config['FLASK_ENV'] == 'testing':
 else:
     app.config.from_object(DevelopmentConfig)
 
-db = SQLAlchemy(app)
+
 bcrypt = Bcrypt(app)
+
+from models.user import User
+from models.account import Account
+from models.transaction import Transaction
 
 app.app_context().push()
 
@@ -31,35 +34,6 @@ login_manager = LoginManager()
 #login_manager.login_view = 'dashboard'
 login_manager.init_app(app)
 
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(60), nullable=False)
-    is_admin = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
-    accounts = db.relationship('Account', backref='user', lazy=True)
-    #transactions = db.relationship('Transaction', backref='user', lazy=True)
-
-class Account(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    institution = db.Column(db.String(100), nullable=False)
-    account_type = db.Column(db.String(50), nullable=False)
-    alias = db.Column(db.String(50), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
-    transactions = db.relationship('Transaction', backref='user', lazy=True)
-
-class Transaction(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    transaction_date = db.Column(db.DateTime, default=datetime.datetime.now())
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
-    description = db.Column(db.String(255))
-    ingress = db.Column(db.Float(precision=2))
-    engress = db.Column(db.Float(precision=2))
-    comment = db.Column(db.String(255))
-    status = db.Column(db.String(256))
-    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
 
 
 @login_manager.user_loader
@@ -181,6 +155,10 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-if __name__ == '__main__':
+@app.before_first_request
+def create_tables():
     db.create_all()
-    app.run(debug=True)
+
+if __name__ == '__main__':
+    db.init_app(app)
+    app.run(port=5000, host = '0.0.0.0', debug=True)

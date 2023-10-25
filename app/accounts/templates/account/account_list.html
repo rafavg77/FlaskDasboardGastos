@@ -19,8 +19,8 @@
                 <td>{{ account.account_type }}</td>
                 <td>{{ account.alias }}</td>
                 <td>
-                    <a href="{{ url_for('update_account', id=account.id) }}" class="btn btn-primary btn-sm">Editar</a>
-                    <form method="post" action="{{ url_for('delete_account', id=account.id) }}" class="d-inline">
+                    <a href="{{ url_for('account.update_account', id=account.id) }}" class="btn btn-primary btn-sm">Editar</a>
+                    <form method="post" action="{{ url_for('account.delete_account', id=account.id) }}" class="d-inline">
                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
                     </form>
                 </td>
@@ -28,6 +28,6 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="{{ url_for('create_account') }}" class="btn btn-success">Crear Cuenta</a>
+    <a href="{{ url_for('account.create_account') }}" class="btn btn-success">Crear Cuenta</a>
 </div>
 {% endblock %}

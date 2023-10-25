@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mt-4">
     <h2>Editar Cuenta</h2>
-    <form method="post" action="{{ url_for('update_account', id=account.id) }}">
+    <form method="post" action="{{ url_for('account.update_account', id=account.id) }}">
         <div class="mb-3">
             <label for="institution" class="form-label">Institución</label>
             <input type="text" class="form-control" id="institution" name="institution" value="{{ account.institution }}" required>

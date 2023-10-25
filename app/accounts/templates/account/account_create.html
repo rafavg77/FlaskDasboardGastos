@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mt-4">
     <h2>Crear Cuenta</h2>
-    <form method="post" action="{{ url_for('create_account') }}">
+    <form method="post" action="{{ url_for('account.create_account') }}">
         <div class="mb-3">
             <label for="institution" class="form-label">Institución</label>
             <input type="text" class="form-control" id="institution" name="institution" required>
