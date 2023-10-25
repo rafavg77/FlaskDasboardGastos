@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Listado de Cuentas</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Institución</th>
+                <th>Tipo de Cuenta</th>
+                <th>Alias</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for account in accounts %}
+            <tr>
+                <td>{{ account.institution }}</td>
+                <td>{{ account.account_type }}</td>
+                <td>{{ account.alias }}</td>
+                <td>
+                    <a href="{{ url_for('account.update_account', id=account.id) }}" class="btn btn-primary btn-sm">Editar</a>
+                    <form method="post" action="{{ url_for('account.delete_account', id=account.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('account.create_account') }}" class="btn btn-success">Crear Cuenta</a>
+</div>
+{% endblock %}
